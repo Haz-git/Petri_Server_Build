@@ -42,7 +42,7 @@ app.use(hpp());
 
 //CORS Policy:
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://petriweb.netlify.app',
     credentials: true,
 }));
 
