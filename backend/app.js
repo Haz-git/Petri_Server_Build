@@ -41,7 +41,9 @@ app.use(hpp());
 //^You can pass in an object { whitelist: ["a","b","c"] } with whitelisted parameters.
 
 //CORS Policy:
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+}));
 
 app.use(function(req, res, next) {
     res.header('Content-Type', 'application/json;charset=UTF-8');
