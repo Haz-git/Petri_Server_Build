@@ -25,7 +25,7 @@ const connectToDb = mongoose
         useFindAndModify: false
     })
     .then(() => {
-        console.log(`Biologger App on port: ${process.env.PORT} has been connected to MongoDB Atlas`);
+        console.log(`Connection to DB successful`);
     })
 
 //Get message from client:
@@ -64,8 +64,10 @@ io.on('connection', socket => {
     })
 })
 
+const port = process.env.PORT || 4000;
+
 //Server Start:
-server.listen(process.env.PORT, () => {
+server.listen(port, () => {
     console.log(`The server is online and listening on port: ${process.env.PORT}`);
 })
 
