@@ -41,8 +41,21 @@ app.use(hpp());
 //^You can pass in an object { whitelist: ["a","b","c"] } with whitelisted parameters.
 
 //CORS Policy:
+
+const allowedDomains = ['https://petriweb.netlify.app', 'http://localhost:3000']
+
 app.use(cors({
-    origin: 'https://petriweb.netlify.app',
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+
+        if (allowedDomains.indexOf(origin) === -1) {
+            const msg = `This site ${origin} does not have access to this server. Only specific domains are allowed.`
+
+            return callback(new Error(msg), false);
+        }
+
+        return callback(null, true);
+    },
     credentials: true,
 }));
 
