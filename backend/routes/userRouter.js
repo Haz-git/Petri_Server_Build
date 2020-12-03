@@ -121,5 +121,8 @@ router
     .route('/scitools/lacz/laczdata/addLacZData')
     .post(laczController.addLacZDataToStrain);
 
+router
+    .route('/scitools/lacz/laczdata/addbgaldata')
+    .post(laczController.addBgalDataToStrain);
 
 module.exports = router;

@@ -213,3 +213,11 @@ exports.addLacZDataToStrain = handleAsync(async(req, res) => {
         laczAssayProtocols: responseUpdatedLacZData.laczAssayProtocols,
     })
 })
+
+exports.addBgalDataToStrain = handleAsync(async(req, res) => {
+
+    const { _id, currentStrainId, currentProtocolId, bgalData } = req.body;
+
+    console.log(bgalData);
+
+})
