@@ -206,7 +206,7 @@ exports.addLacZDataToStrain = handleAsync(async(req, res) => {
         if (err) console.log(err);
     });
 
-    const responseUpdatedBgalData = await User.findOne({ _id }).select('laczAssayProtocols');
+    const responseUpdatedLacZData = await User.findOne({ _id }).select('laczAssayProtocols');
 
     res.status(200).json({
         status: 'Success',
