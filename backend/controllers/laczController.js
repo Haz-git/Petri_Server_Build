@@ -206,7 +206,7 @@ exports.addLacZDataToStrain = handleAsync(async(req, res) => {
         if (err) console.log(err);
     });
 
-    const responseUpdatedLacZData = await User.findOne({ _id }).select('laczAssayProtocols');
+    const responseUpdatedBgalData = await User.findOne({ _id }).select('laczAssayProtocols');
 
     res.status(200).json({
         status: 'Success',
@@ -218,6 +218,23 @@ exports.addBgalDataToStrain = handleAsync(async(req, res) => {
 
     const { _id, currentStrainId, currentProtocolId, bgalData } = req.body;
 
-    console.log(bgalData);
+    let userExistingProtocols = await User.findOne({ _id }).select('laczAssayProtocols');
+
+    const targetIndex = userExistingProtocols.laczAssayProtocols.findIndex(item => item.protocolId === currentProtocolId);
+
+    const strainIndex = userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains.findIndex(strain => strain.strainId === currentStrainId);
+
+    userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains[strainIndex]['bgalData'] = bgalData;
+
+    await User.updateOne({ _id }, { laczAssayProtocols: userExistingProtocols.laczAssayProtocols }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const responseUpdatedBgalData = await User.findOne({ _id }).select('laczAssayProtocols');
+
+    res.status(200).json({
+        status: 'Success',
+        laczAssayProtocols: responseUpdatedBgalData.laczAssayProtocols,
+    })
 
 })
