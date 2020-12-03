@@ -10,7 +10,6 @@ const dayjs = require('dayjs');
 //uuid:
 
 const { v4: uuid } = require('uuid');
-const { collection } = require("../models/userModels");
 
 //Controller Functions:
 
@@ -191,7 +190,7 @@ exports.updateParsedDataToStrain = handleAsync(async(req, res) => {
 });
 
 exports.addLacZDataToStrain = handleAsync(async(req, res) => {
-    const { _id, currentStrainId, currentProtocolId, lacZData } = req.body;
+    const { _id, currentStrainId, currentProtocolId, lacZData, lacZMinutesTaken, lacZVolumeUsed } = req.body;
 
     let userExistingProtocols = await User.findOne({ _id }).select('laczAssayProtocols');
 
@@ -200,6 +199,8 @@ exports.addLacZDataToStrain = handleAsync(async(req, res) => {
     const strainIndex = userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains.findIndex(strain => strain.strainId === currentStrainId);
 
     userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains[strainIndex]['lacZData'] = lacZData;
+    userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains[strainIndex]['lacZMinutesTaken'] = lacZMinutesTaken;
+    userExistingProtocols.laczAssayProtocols[targetIndex].collectionStrains[strainIndex]['lacZVolumeUsed'] = lacZVolumeUsed;
 
     await User.updateOne({ _id }, { laczAssayProtocols: userExistingProtocols.laczAssayProtocols }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
