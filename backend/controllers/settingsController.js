@@ -3,7 +3,18 @@ const handleAsync = require("../utils/handleAsync");
 
 //Model:
 const User = require('../models/userModels');
-const { response } = require("express");
+
+exports.getProfilePicture = handleAsync(async (req, res) => {
+    const { _id } = req.body;
+
+    let userExistingImg = await User.findOne({ _id }).select('profileImg');
+
+    res.status(200).json({
+        status: 'Success',
+        userExistingImg,
+    })
+
+})
 
 
 exports.addProfilePicToUser = handleAsync(async (req, res) => {
