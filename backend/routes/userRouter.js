@@ -9,6 +9,7 @@ const taskController = require('../controllers/taskController');
 const bionoteController = require('../controllers/bionoteController');
 const calendarController = require('../controllers/calendarController');
 const laczController = require('../controllers/laczController');
+const settingsController = require('../controllers/settingsController');
 
 //Authentication Routers:
 router
