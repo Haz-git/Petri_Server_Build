@@ -3,7 +3,7 @@ const handleAsync = require("../utils/handleAsync");
 
 //Model:
 const User = require('../models/userModels');
-const { update } = require("../models/userModels");
+
 
 exports.addNewEvent = handleAsync(async (req, res) => {
 
