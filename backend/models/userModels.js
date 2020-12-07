@@ -48,6 +48,11 @@ const userSchema = mongoose.Schema({
     bionotes: [],
     calendarEvents:[],
     laczAssayProtocols: [],
+    profileImg: {
+        url: String,
+        constraints: Object,
+        required: false,
+    }
 })
 
 //Create a pre-save Hook to hash password before save:
