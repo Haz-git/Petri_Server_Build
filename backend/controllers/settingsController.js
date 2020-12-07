@@ -9,4 +9,8 @@ exports.addProfilePicToUser = handleAsync(async (req, res) => {
     const { _id, imgURL, imgConstraints } = req.body;
 
     console.log(_id, imgURL, imgConstraints);
+
+    res.status(200).json({
+        status: 'Success',
+    })
 })
