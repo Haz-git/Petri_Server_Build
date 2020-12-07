@@ -5,8 +5,8 @@ const handleAsync = require("../utils/handleAsync");
 const User = require('../models/userModels');
 
 
-exports.addProfilePicToUser = handleAsync(async (req, res) => ) {
+exports.addProfilePicToUser = handleAsync(async (req, res) => {
     const { _id, imgURL, imgConstraints } = req.body;
 
     console.log(_id, imgURL, imgConstraints);
-}
+})
