@@ -28,7 +28,8 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 //JSON: Added limiter to reduce DDOS
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb' }));
 
 //Data Sanitization: noSQL query injection
 app.use(mongoSanitize());
