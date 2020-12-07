@@ -132,7 +132,7 @@ router
 router
     .route('/settings/setNewProPic')
     .post(settingsController.addProfilePicToUser);
-
+router
     .route('/settings/getProPic')
     .post(settingsController.getProfilePicture);
 
