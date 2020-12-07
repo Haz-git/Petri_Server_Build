@@ -133,4 +133,7 @@ router
     .route('/settings/setNewProPic')
     .post(settingsController.addProfilePicToUser);
 
+    .route('/settings/getProPic')
+    .post(settingsController.getProfilePicture);
+
 module.exports = router;
