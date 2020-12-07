@@ -125,4 +125,11 @@ router
     .route('/scitools/lacz/laczdata/addbgaldata')
     .post(laczController.addBgalDataToStrain);
 
+
+//Personal User Settings Router:
+
+router
+    .route('/settings/setNewProPic')
+    .post(settingsController.addProfilePicToUser);
+
 module.exports = router;
