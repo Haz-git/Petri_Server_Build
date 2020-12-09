@@ -142,16 +142,16 @@ router
     .route('/settings/changeLastName')
     .post(settingsController.userChangeLastName);
 
-// router
-//     .route('/settings/changeFirstName')
-//     .post(settingsController.userChangeFirstName);
+router
+    .route('/settings/changeFirstName')
+    .post(settingsController.userChangeFirstName);
 
-// router
-//     .route('/settings/changeUserName')
-//     .post(settingsController.userChangeUserName);
+router
+    .route('/settings/changeUserName')
+    .post(settingsController.userChangeUserName);
 
-// router
-//     .route('/settings/changeEmailAddress')
-//     .post(settingsController.userChangeLastName);
+router
+    .route('/settings/changeEmailAddress')
+    .post(settingsController.userChangeEmail);
 
 module.exports = router;
