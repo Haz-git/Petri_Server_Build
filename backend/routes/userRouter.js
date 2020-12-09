@@ -136,4 +136,22 @@ router
     .route('/settings/getProPic')
     .post(settingsController.getProfilePicture);
 
+//Routes for User To Change Personal Information:
+
+router
+    .route('/settings/changeLastName')
+    .post(settingsController.userChangeLastName);
+
+// router
+//     .route('/settings/changeFirstName')
+//     .post(settingsController.userChangeFirstName);
+
+// router
+//     .route('/settings/changeUserName')
+//     .post(settingsController.userChangeUserName);
+
+// router
+//     .route('/settings/changeEmailAddress')
+//     .post(settingsController.userChangeLastName);
+
 module.exports = router;
