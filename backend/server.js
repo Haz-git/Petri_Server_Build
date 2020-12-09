@@ -46,9 +46,6 @@ io.on('connection', socket => {
                         success: false,
                         err,
                     })
-                    
-                    console.log('Chat document saved to Mongo');
-                    console.log(doc._id);
 
                     Chat.find({
                         "_id": doc._id,
