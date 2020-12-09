@@ -12,9 +12,9 @@ exports.getProfilePicture = handleAsync(async (req, res) => {
     res.status(200).json({
         status: 'Success',
         existingUser
-    })
+    });
 
-})
+});
 
 
 exports.addProfilePicToUser = handleAsync(async (req, res) => {
@@ -37,9 +37,9 @@ exports.addProfilePicToUser = handleAsync(async (req, res) => {
     res.status(200).json({
         status: 'Success',
         responseUpdatedProfilePic,
-    })
+    });
 
-})
+});
 
 /*
 router
@@ -76,9 +76,9 @@ exports.userChangeLastName = handleAsync(async(req, res) => {
     res.status(200).json({
         status: 'Success',
         updatedLastNameUser
-    })
+    });
 
-})
+});
 
 
 exports.userChangeFirstName = handleAsync(async(req, res) => {
@@ -96,6 +96,44 @@ exports.userChangeFirstName = handleAsync(async(req, res) => {
     res.status(200).json({
         status: 'Success',
         updatedFirstNameUser
-    })
+    });
 
-})
+});
+
+exports.userChangeUserName = handleAsync(async(req, res) => {
+    const { _id, newUserName } = req.body;
+
+    let existingUser = await User.findOne({ _id });
+    existingUser['userName'] = newUserName;
+
+    await User.updateOne({ _id }, { userName: existingUser.userName }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const updatedUserNameUser = await User.findOne({ _id });
+
+    res.status(200).json({
+        status: 'Success',
+        updatedUserNameUser
+    });
+
+});
+
+exports.userChangeEmail = handleAsync(async(req, res) => {
+    const { _id, newEmailAddress } = req.body;
+
+    let existingUser = await User.findOne({ _id });
+    existingUser['email'] = newEmailAddress;
+
+    await User.updateOne({ _id }, { email: existingUser.email }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const updatedEmailAddressUser = await User.findOne({ _id });
+
+    res.status(200).json({
+        status: 'Success',
+        updatedEmailAddressUser
+    });
+
+});
