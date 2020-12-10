@@ -7,13 +7,13 @@ const User = require('../models/userModels');
 exports.addBioNote = handleAsync(async(req, res) => {
 
     //Extract data:
-    const { data, _id, bioName } = req.body;
+    const { flattedEditorObject, _id, bioName } = req.body;
 
     //Find Appropriate User and select bionotes array:
     const userExistingBioNotesCollection = await User.findOne({ _id }).select('bionotes');
     
     //Update bionotes array:
-    userExistingBioNotesCollection.bionotes.push({bioName, data});
+    userExistingBioNotesCollection.bionotes.push({ bioName, flattedEditorObject });
 
     //Update User with new bionotes array:
     await User.updateOne({ _id }, { bionotes: userExistingBioNotesCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
