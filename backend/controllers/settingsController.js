@@ -8,10 +8,17 @@ exports.getProfilePicture = handleAsync(async (req, res) => {
     const { _id } = req.body;
 
     const existingUser = await User.findOne({ _id });
+    const { firstName, lastName, userName, email, profileImg } = existingUser;
 
     res.status(200).json({
         status: 'Success',
-        existingUser
+        existingUser : {
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
@@ -32,11 +39,17 @@ exports.addProfilePicToUser = handleAsync(async (req, res) => {
 
     const responseUpdatedProfilePic = await User.findOne({ _id });
 
-    console.log(responseUpdatedProfilePic);
+    const { firstName, lastName, userName, email, profileImg } = responseUpdatedProfilePic;
 
     res.status(200).json({
         status: 'Success',
-        responseUpdatedProfilePic,
+        responseUpdatedProfilePic : {
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
@@ -72,10 +85,18 @@ exports.userChangeLastName = handleAsync(async(req, res) => {
     });
 
     const updatedLastNameUser = await User.findOne({ _id });
+    const { firstName, lastName, userName, email, profileImg } = updatedLastNameUser;
 
     res.status(200).json({
         status: 'Success',
-        updatedLastNameUser
+        updatedLastNameUser: {
+            _id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
@@ -92,10 +113,18 @@ exports.userChangeFirstName = handleAsync(async(req, res) => {
     });
 
     const updatedFirstNameUser = await User.findOne({ _id });
+    const { firstName, lastName, userName, email, profileImg } = updatedFirstNameUser;
 
     res.status(200).json({
         status: 'Success',
-        updatedFirstNameUser
+        updatedFirstNameUser: {
+            _id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
@@ -111,10 +140,18 @@ exports.userChangeUserName = handleAsync(async(req, res) => {
     });
 
     const updatedUserNameUser = await User.findOne({ _id });
+    const { firstName, lastName, userName, email, profileImg } = updatedUserNameUser;
 
     res.status(200).json({
         status: 'Success',
-        updatedUserNameUser
+        updatedUserNameUser: {
+            _id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
@@ -130,10 +167,18 @@ exports.userChangeEmail = handleAsync(async(req, res) => {
     });
 
     const updatedEmailAddressUser = await User.findOne({ _id });
+    const { firstName, lastName, userName, email, profileImg } = updatedEmailAddressUser;
 
     res.status(200).json({
         status: 'Success',
-        updatedEmailAddressUser
+        updatedEmailAddressUser: {
+            _id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            profileImg,
+        }
     });
 
 });
