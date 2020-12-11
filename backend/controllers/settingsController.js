@@ -13,6 +13,7 @@ exports.getProfilePicture = handleAsync(async (req, res) => {
     res.status(200).json({
         status: 'Success',
         existingUser : {
+            _id,
             firstName,
             lastName,
             userName,
@@ -44,6 +45,7 @@ exports.addProfilePicToUser = handleAsync(async (req, res) => {
     res.status(200).json({
         status: 'Success',
         responseUpdatedProfilePic : {
+            _id,
             firstName,
             lastName,
             userName,
