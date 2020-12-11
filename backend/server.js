@@ -50,7 +50,7 @@ io.on('connection', socket => {
                     Chat.find({
                         "_id": doc._id,
                     }).populate("sender").exec((err, doc) => {
-                        //Once finish persistence, we send information back to client..
+                        //Once we finish persistence, we send information back to client..
                         return io.emit("Output Chat Message", doc); 
                     });
                 })
