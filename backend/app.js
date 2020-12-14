@@ -2,13 +2,15 @@
 const express = require('express');
 const userRouter = require('./routes/userRouter');
 const cors = require('cors');
+const handleErrors = require('./utils/handleErrors');
 
 //Security Dependencies:
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
-const hpp = require('hpp')
+const hpp = require('hpp');
+const throwAppError = require('./utils/throwAppError');
 
 //Creating Express application object:
 const app = express();
@@ -77,5 +79,16 @@ app.use(function(req, res, next) {
 
 //Attaching Main Routes:
 app.use('/api/users', userRouter);
+
+//Catching any routes that have not been established.
+
+// app.all('*', (req, res, next) => {
+//     next(new throwAppError(`Can't find ${req.originalUrl} on this server!`, 404))
+// })
+
+//I should catch errors here with a globalErrorHandler:
+app.use((err, req, res, next) => {
+    handleErrors(err, res);
+});
 
 module.exports = app;
