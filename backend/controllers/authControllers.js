@@ -9,6 +9,29 @@ const User = require('../models/userModels');
 const handleAsync = require('../utils/handleAsync');
 const throwAppError = require('../utils/throwAppError');
 
+//Creating function to authenticate JWT:
+
+exports.authenticateJWT = (req, res, next) => {
+
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+    
+}
+
 //Creating function to sign JWT:
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
@@ -27,8 +50,6 @@ const createSendToken = (user, statusCode, res, message, completed) => {
     if (process.env.NODE_ENV === 'production') {
         cookieOptions.secure = true;
     }
-
-    res.cookie('jwt', token, cookieOptions);
 
     //Remove password from res.body:
     user.password = undefined;
@@ -67,10 +88,6 @@ exports.signup = handleAsync(async(req, res, next) => {
         password,
         passwordConfirm,
     });
-
-    // createSendToken(newUser, 201, res, 'New User Created.', true);
-    // Stop giving user token on sign up...
-    // const token = signToken(newUser._id);
 
     res.status(200).json({
         status: 'Success',
@@ -112,8 +129,6 @@ exports.login = handleAsync(async (req, res, next) => {
 
     //Find the same user for data processing into redux store, but exclude password:
     const returnedUser = await User.findOne({ email });
-
-    console.log(returnedUser._id);
 
     res.status(200).json({
         status: 'Success',
