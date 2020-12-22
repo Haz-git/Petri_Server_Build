@@ -7,13 +7,13 @@ const User = require('../models/userModels');
 exports.addBioNote = handleAsync(async(req, res) => {
 
     //Extract data:
-    const { flattedEditorObject, _id, bioName } = req.body;
+    const { htmlState, _id, bioName } = req.body;
 
     //Find Appropriate User and select bionotes array:
     const userExistingBioNotesCollection = await User.findOne({ _id }).select('bionotes');
     
     //Update bionotes array:
-    userExistingBioNotesCollection.bionotes.push({ bioName, flattedEditorObject });
+    userExistingBioNotesCollection.bionotes.push({ bioName, htmlState });
 
     //Update User with new bionotes array:
     await User.updateOne({ _id }, { bionotes: userExistingBioNotesCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
@@ -43,15 +43,15 @@ exports.getBioNotes = handleAsync(async(req, res) => {
 
 exports.updateBioNote = handleAsync(async(req, res) => {
 
-    const { _id, bioName, data } = req.body;
+    const { _id, bioName, updatedHTMLState } = req.body;
 
     //Find target User and select bionotes:
 
     const userBioNoteCollection = await User.findOne({ _id }).select('bionotes');
 
-    //Iterate through bionotes, find the one with the correct bioName, replace old data with new from req.body.
+    //Iterate through bionotes, find the one with the correct bioName, replace old updatedHTMLState with new from req.body.
 
-    userBioNoteCollection.bionotes.find(x => x.bioName === bioName)['data'] = data;
+    userBioNoteCollection.bionotes.find(x => x.bioName === bioName)['htmlState'] = updatedHTMLState;
 
     //Update document:
 
