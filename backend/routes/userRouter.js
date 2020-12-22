@@ -1,6 +1,9 @@
 const express = require('express');
-const { route } = require('../app');
 const router = express.Router();
+
+//Authentication Function:
+const authJWT = require('../controllers/authControllers');
+const authenticateJWT = authJWT.authenticateJWT;
 
 //Controllers:
 const authController = require('../controllers/authControllers');
@@ -30,128 +33,128 @@ router
 
 router
     .route('/chats')
-    .get(chatController.chatLogs);
+    .get(authenticateJWT, chatController.chatLogs);
     
 //Personal User Task Router:
 
 router
     .route('/task')
-    .post(taskController.addTask);
+    .post(authenticateJWT, taskController.addTask);
 
 router
     .route('/getTasks')
-    .post(taskController.getTasks);
+    .post(authenticateJWT, taskController.getTasks);
 
 router
     .route('/task/delete')
-    .post(taskController.deleteTask);
+    .post(authenticateJWT, taskController.deleteTask);
 
 //Personal User BioNote Router:
 
 router
     .route('/bionote/create')
-    .post(bionoteController.addBioNote)
+    .post(authenticateJWT, bionoteController.addBioNote)
 
 router
     .route('/bionote/load')
-    .post(bionoteController.getBioNotes);
+    .post(authenticateJWT, bionoteController.getBioNotes);
 
 router
     .route('/bionote/update')
-    .patch(bionoteController.updateBioNote);
+    .patch(authenticateJWT, bionoteController.updateBioNote);
 
 router
     .route('/bionote/delete')
-    .patch(bionoteController.deleteBioNote);
+    .patch(authenticateJWT, bionoteController.deleteBioNote);
 
 //Personal Calendar Router:
 
 router
     .route('/calendar/new')
-    .post(calendarController.addNewEvent);
+    .post(authenticateJWT, calendarController.addNewEvent);
 
 router
     .route('/calendar/events')
-    .post(calendarController.getAllEvents);
+    .post(authenticateJWT, calendarController.getAllEvents);
 
 router
     .route('/calendar/delete')
-    .post(calendarController.deleteEvent);
+    .post(authenticateJWT, calendarController.deleteEvent);
 
 router
     .route('/calendar/update')
-    .patch(calendarController.updateEvent);
+    .patch(authenticateJWT, calendarController.updateEvent);
 
 //Personal Scitools Router:
 
 router
     .route('/scitools/lacz/add')
-    .post(laczController.addNewProtocol);
+    .post(authenticateJWT, laczController.addNewProtocol);
 
 router
     .route('/scitools/lacz/get')
-    .post(laczController.getAllProtocols);
+    .post(authenticateJWT, laczController.getAllProtocols);
 
 router
     .route('/scitools/lacz/edit')
-    .patch(laczController.editProtocolName);
+    .patch(authenticateJWT, laczController.editProtocolName);
 
 router
     .route('/scitools/lacz/delete')
-    .post(laczController.deleteProtocol);
+    .post(authenticateJWT, laczController.deleteProtocol);
 
 router
     .route('/scitools/lacz/collection/addStrainToCollection')
-    .post(laczController.addStrainToCollection);
+    .post(authenticateJWT, laczController.addStrainToCollection);
 
 router
     .route('/scitools/lacz/collection/deleteStrain')
-    .post(laczController.deleteStrainFromCollection);
+    .post(authenticateJWT, laczController.deleteStrainFromCollection);
 
 //Route to modify collection data for a certain strain:
 
 router
     .route('/scitools/lacz/collection/addCollectionData')
-    .post(laczController.addCollectionDataToStrain);
+    .post(authenticateJWT, laczController.addCollectionDataToStrain);
 
 router
     .route('/scitools/lacz/collection/updateParsedData')
-    .post(laczController.updateParsedDataToStrain);
+    .post(authenticateJWT, laczController.updateParsedDataToStrain);
 
 router
     .route('/scitools/lacz/laczdata/addLacZData')
-    .post(laczController.addLacZDataToStrain);
+    .post(authenticateJWT, laczController.addLacZDataToStrain);
 
 router
     .route('/scitools/lacz/laczdata/addbgaldata')
-    .post(laczController.addBgalDataToStrain);
+    .post(authenticateJWT, laczController.addBgalDataToStrain);
 
 
 //Personal User Settings Router:
 
 router
     .route('/settings/setNewProPic')
-    .post(settingsController.addProfilePicToUser);
+    .post(authenticateJWT, settingsController.addProfilePicToUser);
 router
     .route('/settings/getProPic')
-    .post(settingsController.getProfilePicture);
+    .post(authenticateJWT, settingsController.getProfilePicture);
 
 //Routes for User To Change Personal Information:
 
 router
     .route('/settings/changeLastName')
-    .post(settingsController.userChangeLastName);
+    .post(authenticateJWT, settingsController.userChangeLastName);
 
 router
     .route('/settings/changeFirstName')
-    .post(settingsController.userChangeFirstName);
+    .post(authenticateJWT, settingsController.userChangeFirstName);
 
 router
     .route('/settings/changeUserName')
-    .post(settingsController.userChangeUserName);
+    .post(authenticateJWT, settingsController.userChangeUserName);
 
 router
     .route('/settings/changeEmailAddress')
-    .post(settingsController.userChangeEmail);
+    .post(authenticateJWT, settingsController.userChangeEmail);
 
 module.exports = router;
