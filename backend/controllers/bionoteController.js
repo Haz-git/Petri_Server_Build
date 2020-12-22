@@ -7,13 +7,13 @@ const User = require('../models/userModels');
 exports.addBioNote = handleAsync(async(req, res) => {
 
     //Extract data:
-    const { htmlState, _id, bioName } = req.body;
+    const { htmlState, _id, bioName, bionote_ID } = req.body;
 
     //Find Appropriate User and select bionotes array:
     const userExistingBioNotesCollection = await User.findOne({ _id }).select('bionotes');
     
     //Update bionotes array:
-    userExistingBioNotesCollection.bionotes.push({ bioName, htmlState });
+    userExistingBioNotesCollection.bionotes.push({ bionote_ID, bioName, htmlState });
 
     //Update User with new bionotes array:
     await User.updateOne({ _id }, { bionotes: userExistingBioNotesCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
@@ -43,7 +43,7 @@ exports.getBioNotes = handleAsync(async(req, res) => {
 
 exports.updateBioNote = handleAsync(async(req, res) => {
 
-    const { _id, bioName, updatedHTMLState } = req.body;
+    const { _id, bionote_ID, updatedHTMLState } = req.body;
 
     //Find target User and select bionotes:
 
@@ -51,7 +51,7 @@ exports.updateBioNote = handleAsync(async(req, res) => {
 
     //Iterate through bionotes, find the one with the correct bioName, replace old updatedHTMLState with new from req.body.
 
-    userBioNoteCollection.bionotes.find(x => x.bioName === bioName)['htmlState'] = updatedHTMLState;
+    userBioNoteCollection.bionotes.find(x => x.bionote_ID === bionote_ID)['htmlState'] = updatedHTMLState;
 
     //Update document:
 
@@ -70,12 +70,14 @@ exports.updateBioNote = handleAsync(async(req, res) => {
 })
 
 exports.deleteBioNote = handleAsync(async(req, res) => {
-    const { _id, bioName } = req.body;
+    const { _id, bionote_ID } = req.body;
 
     let userBioNoteCollection = await User.findOne({ _id }).select('bionotes');
+    //UUID has been generated for deletion rather than bionote name.
 
-    //This is perhaps inefficient. What happens when a user has same bionote names? I think i'll generate a uuid() and then use that for deletion...
-    userBioNoteCollection.bionotes.splice(userBioNoteCollection.bionotes.indexOf(x => x.bioName === bioName), 1);
+    //indexOf and find has to be used in tandem for optimal search and destroy via splice.
+
+    userBioNoteCollection.bionotes.splice(userBioNoteCollection.bionotes.indexOf(userBioNoteCollection.bionotes.find(x => x.bionote_ID === bionote_ID)), 1);
 
     await User.updateOne({ _id }, { bionotes: userBioNoteCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
