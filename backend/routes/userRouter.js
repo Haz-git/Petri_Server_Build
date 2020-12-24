@@ -43,7 +43,7 @@ router
 
 router
     .route('/getTasks')
-    .post(authenticateJWT, taskController.getTasks);
+    .post(taskController.getTasks);
 
 router
     .route('/task/delete')
@@ -137,7 +137,7 @@ router
     .post(authenticateJWT, settingsController.addProfilePicToUser);
 router
     .route('/settings/getProPic')
-    .post(authenticateJWT, settingsController.getProfilePicture);
+    .post(settingsController.getProfilePicture);
 
 //Routes for User To Change Personal Information:
 
