@@ -13,6 +13,8 @@ const throwAppError = require('../utils/throwAppError');
 
 exports.authenticateJWT = (req, res, next) => {
 
+    //Bearer + JWT should be in the header 'authorization'.
+
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
@@ -144,9 +146,9 @@ exports.login = handleAsync(async (req, res, next) => {
 
 //Logout Controller:
 
-exports.logout = handleAsync(async (req, res) => {
-    res.clearCookie('jwt').status(200).json({
-        status: 'Success',
-        message: 'User has been successfully logged out',
-    })
-});
+// exports.logout = handleAsync(async (req, res) => {
+//     res.clearCookie('jwt').status(200).json({
+//         status: 'Success',
+//         message: 'User has been successfully logged out',
+//     })
+// });
