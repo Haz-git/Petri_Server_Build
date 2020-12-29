@@ -23,9 +23,9 @@ router
     .route('/login')
     .post(authController.login);
 
-router
-    .route('/logout')
-    .get(authController.logout);
+// router
+//     .route('/logout')
+//     .get(authController.logout);
 
 
 
@@ -43,7 +43,7 @@ router
 
 router
     .route('/getTasks')
-    .post(taskController.getTasks);
+    .post(authenticateJWT, taskController.getTasks);
 
 router
     .route('/task/delete')
@@ -137,7 +137,7 @@ router
     .post(authenticateJWT, settingsController.addProfilePicToUser);
 router
     .route('/settings/getProPic')
-    .post(settingsController.getProfilePicture);
+    .post(authenticateJWT, settingsController.getProfilePicture);
 
 //Routes for User To Change Personal Information:
 
