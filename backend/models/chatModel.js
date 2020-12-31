@@ -12,7 +12,7 @@ const chatSchema = mongoose.Schema({
     type: {
         type: String
     }, 
-},{timestamps: true});
+},{ timestamps: true });
 
 const Chat = mongoose.model('Chat', chatSchema);
 
