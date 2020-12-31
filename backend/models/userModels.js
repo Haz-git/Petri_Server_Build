@@ -48,7 +48,10 @@ const userSchema = new mongoose.Schema({
     bionotes: [],
     calendarEvents:[],
     laczAssayProtocols: [],
-    profileImg: {},
+    profileImg: {
+        type: mongoose.Schema.Types.Mixed,
+        default: undefined,
+    },
 }, { minimize: false });
 
 //Minimize: false should prevent removal of profileImg's empty object.
