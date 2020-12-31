@@ -49,7 +49,7 @@ const userSchema = mongoose.Schema({
     calendarEvents:[],
     laczAssayProtocols: [],
     profileImg: {},
-}, { retainKeyOrder: true, minimize: false })
+}, { minimize: false })
 
 //Minimize: false should prevent removal of profileImg's empty object.
 
