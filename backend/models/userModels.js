@@ -49,7 +49,9 @@ const userSchema = mongoose.Schema({
     calendarEvents:[],
     laczAssayProtocols: [],
     profileImg: {},
-})
+}, { retainKeyOrder: true, minimize: false })
+
+//Minimize: false should prevent removal of profileImg's empty object.
 
 //Create a pre-save Hook to hash password before save:
 userSchema.pre('save', async function(next) {
