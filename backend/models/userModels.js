@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     laczAssayProtocols: [],
     profileImg: {
         type: mongoose.Schema.Types.Mixed,
-        default: undefined,
+        default: {}
     },
 }, { minimize: false });
 
