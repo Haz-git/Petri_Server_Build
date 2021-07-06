@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 //Helper Function:
 const handleAsync = require("../utils/handleAsync");
 
@@ -75,6 +77,49 @@ router
 
 
 */
+
+exports.userChangePassword = handleAsync(async(req, res) => {
+    const { newPassword, newPasswordConfirm, currentPassword } = req.body;
+
+    let existingUser = await User.findOne({ _id });
+
+    if (newPassword !== '' && newPasswordConfirm !== '' && currentPassword !== '') {
+        existingUser.comparePasswords(currentPassword, existingUser.password).then(async (isValid) => {
+            if (isValid) {
+                if (newPassword === newPasswordConfirm) {
+
+                    const newSavedPassword = await bcrypt.hash(newPassword, 12);
+
+                    await User.updateOne({ id: _id}, { password: newSavedPassword }, { bypassDocumentValidation: true }, (err) => {
+                        if (err) console.log(err);
+                    });
+
+                    res.status(200).json({
+                        status: 'Success',
+                        msg: 'Your user password has been updated.'
+                    })
+                } else {
+                    res.status(401).json({
+                        status: 'Failed',
+                        msg: 'Your new passwords do not match'
+                    });
+                }
+            } else {
+
+                res.status(401).json({
+                    status: 'Failed',
+                    msg: 'Your password does not match the current password.'
+                });
+            }
+        });
+    } 
+
+    //If reaches here, something wrong occurred.
+
+    res.status(500).json({
+        msg: 'Error. The server was unable to handle your request',
+    });
+})
 
 exports.userChangeLastName = handleAsync(async(req, res) => {
     const { _id, newLastName } = req.body;
