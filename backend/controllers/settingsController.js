@@ -82,7 +82,7 @@ exports.userChangePassword = handleAsync(async(req, res) => {
     const { newPassword, newPasswordConfirm, currentPassword, _id } = req.body;
 
     let existingUser = await User.findOne({ _id });
-
+    
     if (newPassword !== '' && newPasswordConfirm !== '' && currentPassword !== '') {
         existingUser.comparePasswords(currentPassword, existingUser.password).then(async (isValid) => {
             if (isValid) {
@@ -90,7 +90,7 @@ exports.userChangePassword = handleAsync(async(req, res) => {
 
                     const newSavedPassword = await bcrypt.hash(newPassword, 12);
 
-                    await User.updateOne({ id: _id}, { password: newSavedPassword }, { bypassDocumentValidation: true }, (err) => {
+                    await User.updateOne({ _id: _id}, { password: newSavedPassword }, { bypassDocumentValidation: true }, (err) => {
                         if (err) console.log(err);
                     });
 
@@ -112,13 +112,13 @@ exports.userChangePassword = handleAsync(async(req, res) => {
                 });
             }
         });
-    } 
+    } else {
+        //If reaches here, something wrong occurred.
+        res.status(500).json({
+            msg: 'Error. The server was unable to handle your request',
+        });
+    }
 
-    //If reaches here, something wrong occurred.
-
-    res.status(500).json({
-        msg: 'Error. The server was unable to handle your request',
-    });
 })
 
 exports.userChangeLastName = handleAsync(async(req, res) => {
