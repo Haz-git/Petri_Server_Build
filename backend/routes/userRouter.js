@@ -157,4 +157,8 @@ router
     .route('/settings/changeEmailAddress')
     .post(authenticateJWT, settingsController.userChangeEmail);
 
+router
+    .route('/settings/changePassword')
+    .post(authenticateJWT, settingsController.userChangePassword);
+
 module.exports = router;
