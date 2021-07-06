@@ -31,7 +31,7 @@ app.use('/api', limiter);
 
 //JSON: Added limiter to reduce DDOS
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 //Data Sanitization: noSQL query injection
 app.use(mongoSanitize());
