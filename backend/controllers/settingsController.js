@@ -79,7 +79,7 @@ router
 */
 
 exports.userChangePassword = handleAsync(async(req, res) => {
-    const { newPassword, newPasswordConfirm, currentPassword } = req.body;
+    const { newPassword, newPasswordConfirm, currentPassword, _id } = req.body;
 
     let existingUser = await User.findOne({ _id });
 
