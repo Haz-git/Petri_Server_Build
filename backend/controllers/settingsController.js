@@ -108,7 +108,7 @@ exports.userChangePassword = handleAsync(async(req, res) => {
 
                 res.status(401).json({
                     status: 'Failed',
-                    msg: 'Your password does not match the current password.'
+                    msg: 'Your current password was incorrect. Password change unsuccessful.'
                 });
             }
         });
