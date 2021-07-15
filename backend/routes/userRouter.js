@@ -10,6 +10,7 @@ const authController = require('../controllers/authControllers');
 const chatController = require('../controllers/chatController');
 const taskController = require('../controllers/taskController');
 const bionoteController = require('../controllers/bionoteController');
+const folderController = require('../controllers/folderControllers');
 const calendarController = require('../controllers/calendarController');
 const laczController = require('../controllers/laczController');
 const settingsController = require('../controllers/settingsController');
@@ -49,11 +50,28 @@ router
     .route('/task/delete')
     .post(authenticateJWT, taskController.deleteTask);
 
+//Personal User Folder Router:
+router
+    .route('/notebook/folder/create')
+    .post(authenticateJWT, folderController.addFolder);
+
+router
+    .route('/notebook/folder/delete')
+    .post(authenticateJWT, folderController.deleteFolder);
+
+router
+    .route('/notebook/folder/edit')
+    .post(authenticateJWT, folderController.renameFolder);
+
+router
+    .route('/notebook/folder/get')
+    .post(authenticateJWT, folderController.getFolders);
+
 //Personal User BioNote Router:
 
 router
     .route('/bionote/create')
-    .post(authenticateJWT, bionoteController.addBioNote)
+    .post(authenticateJWT, bionoteController.addBioNote);
 
 router
     .route('/bionote/load')
