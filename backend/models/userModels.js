@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     bionotes: [],
     calendarEvents:[],
     laczAssayProtocols: [],
+    notebook: [],
     profileImg: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
