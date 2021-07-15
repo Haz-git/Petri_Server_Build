@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 //Helper Function:
 const handleAsync = require("../utils/handleAsync");
 
@@ -17,9 +19,7 @@ exports.addFolder = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    console.log(userNotebook.notebook);
-
-    userNotebook.notebook.push({ folderName: folderName, notes: []});
+    userNotebook.notebook.push({ folderName: folderName, folderId: uuidv4(), notes: []});
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
