@@ -12,9 +12,24 @@ exports.getFolders = handleAsync(async(req, res) => {
 });
 
 exports.addFolder = handleAsync(async(req, res) => {
+
+    const { _id, folderName } = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    console.log(userNotebook.notebook);
+
+    userNotebook.notebook.push({ folderName: folderName, notes: []});
+
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+
     res.status(200).json({
         status: 'Success',
-        msg: 'Route established2'
+        userNotebook: updatedNotebook.notebook
     });
 });
 
