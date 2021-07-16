@@ -79,8 +79,6 @@ userSchema.methods.injectChildToParent = function (entity, parentId, userNoteboo
         if (folder.folderId === parentId) return true;
     });
 
-    console.log(targetFolderIdx);
-
     if (targetFolderIdx > -1) {
         userNotebook.rootFolders[targetFolderIdx].children.push(entity);
     }
@@ -90,7 +88,26 @@ userSchema.methods.injectChildToParent = function (entity, parentId, userNoteboo
 }
 
 //Find the correct parent and removes the child note
-userSchema.methods.removeChildFromParent = function (){}
+userSchema.methods.removeChildFromParent = function (childId, parentId, userNotebook) {
+    const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
+        if (folder.folderId === parentId) return true;
+    });
+
+    if (targetFolderIdx > -1) {
+
+        const targetChildIdx = userNotebook.rootFolders[targetFolderIdx].children.findIndex((child) => {
+            if (child.noteId === childId || child.folderId === childId) {
+                return true;
+            }
+        });
+
+        userNotebook.rootFolders[targetFolderIdx].children.splice(targetChildIdx, 1);
+    }
+
+    return userNotebook;
+
+
+}
 
 //Creating Model:
 const User = mongoose.model('User', userSchema);
