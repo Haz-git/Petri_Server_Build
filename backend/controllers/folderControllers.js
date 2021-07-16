@@ -34,9 +34,27 @@ exports.addFolder = handleAsync(async(req, res) => {
 });
 
 exports.deleteFolder = handleAsync(async(req, res) => {
+
+    const { _id, folderId } = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    const delIdx = userNotebook.notebook.folders.findIndex((folder) => {
+        if (folder.folderId === folderId) return true;
+    });
+
+    userNotebook.notebook.folders.splice(delIdx, 1);
+
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+    
+
     res.status(200).json({
         status: 'Success',
-        msg: 'Route established3'
+        userNotebook: updatedNotebook.notebook
     });
 });
 
