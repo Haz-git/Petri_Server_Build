@@ -64,8 +64,8 @@ router
     .post(authenticateJWT, folderController.renameFolder);
 
 router
-    .route('/notebook/folder/get')
-    .post(authenticateJWT, folderController.getFolders);
+    .route('/notebook/get')
+    .post(authenticateJWT, folderController.getNotebook);
 
 //Personal User BioNote Router:
 
