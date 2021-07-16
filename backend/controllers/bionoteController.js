@@ -85,24 +85,30 @@ exports.updateBioNote = handleAsync(async(req, res) => {
 })
 
 exports.deleteBioNote = handleAsync(async(req, res) => {
-    const { _id, bionote_ID } = req.body;
+    const { _id, noteId, parentId } = req.body;
 
-    let userBioNoteCollection = await User.findOne({ _id }).select('bionotes');
-    //UUID has been generated for deletion rather than bionote name.
+    const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    //indexOf and find has to be used in tandem for optimal search and destroy via splice.
+    const delIdx = userNotebook.notebook.rootFiles.findIndex((note) => {
+        if (note.noteId === noteId) return true;
+    });
 
-    userBioNoteCollection.bionotes.splice(userBioNoteCollection.bionotes.indexOf(userBioNoteCollection.bionotes.find(x => x.bionote_ID === bionote_ID)), 1);
+    userNotebook.notebook.rootFiles.splice(delIdx, 1);
 
-    await User.updateOne({ _id }, { bionotes: userBioNoteCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.removeChildFromParent(noteId, parentId, userNotebook.notebook);
+    }
+
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
     });
 
-    const deletedUserBioNoteCollection = await User.findOne({ _id }).select('bionotes');
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
 
     res.status(200).json({
         status: 'Success',
-        deletedUserBioNoteCollection,
-    })
+        userNotebook: updatedNotebook.notebook
+    });
 
 })
