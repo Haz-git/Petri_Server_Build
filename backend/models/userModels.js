@@ -73,6 +73,25 @@ userSchema.methods.comparePasswords = async function(userSubmittedPassword, user
     return await bcrypt.compare(userSubmittedPassword, userPassword);
 }
 
+//Finds the correct parent folder and injects the child note.
+userSchema.methods.injectChildToParent = function (item, parentId, userNotebook) {
+    const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
+        if (folder.folderId === parentId) return true;
+    });
+
+    console.log(targetFolderIdx);
+
+    if (targetFolderIdx > -1) {
+        userNotebook.rootFolders[targetFolderIdx].children.push(item);
+    }
+
+    return userNotebook;
+
+}
+
+//Find the correct parent and removes the child note
+userSchema.methods.removeChildFromParent = function (){}
+
 //Creating Model:
 const User = mongoose.model('User', userSchema);
 
