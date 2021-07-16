@@ -20,11 +20,17 @@ exports.getNotebook = handleAsync(async(req, res) => {
 
 exports.addFolder = handleAsync(async(req, res) => {
 
-    const { _id, folderName, parentLevel } = req.body;
+    const { _id, folderName, parentId } = req.body;
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    userNotebook.notebook.rootFolders.push({ folderName: folderName, folderId: uuidv4(), children: [], parent: parentLevel});
+    const folderObject = { folderName: folderName, folderId: uuidv4(), children: [], parentId}
+
+    userNotebook.notebook.rootFolders.push(folderObject);
+
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.injectChildToParent(folderObject, parentId, userNotebook.notebook);
+    }
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
