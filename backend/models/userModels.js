@@ -74,7 +74,7 @@ userSchema.methods.comparePasswords = async function(userSubmittedPassword, user
 }
 
 //Finds the correct parent folder and injects the child note.
-userSchema.methods.injectChildToParent = function (item, parentId, userNotebook) {
+userSchema.methods.injectChildToParent = function (entity, parentId, userNotebook) {
     const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
         if (folder.folderId === parentId) return true;
     });
@@ -82,7 +82,7 @@ userSchema.methods.injectChildToParent = function (item, parentId, userNotebook)
     console.log(targetFolderIdx);
 
     if (targetFolderIdx > -1) {
-        userNotebook.rootFolders[targetFolderIdx].children.push(item);
+        userNotebook.rootFolders[targetFolderIdx].children.push(entity);
     }
 
     return userNotebook;
