@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 //Helper Function:
 const handleAsync = require("../utils/handleAsync");
 
@@ -8,26 +10,38 @@ const User = require('../models/userModels');
 exports.addBioNote = handleAsync(async(req, res) => {
 
     //Extract data:
-    const { htmlState, _id, bioName, bionote_ID } = req.body;
+    const { htmlState, _id, bioName, parentId } = req.body;
 
-    //Find Appropriate User and select bionotes array:
-    const userExistingBioNotesCollection = await User.findOne({ _id }).select('bionotes');
+    //Find Appropriate User and select notebook:
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    const notesObject = {
+        noteId: uuidv4(),
+        noteName: bioName, 
+        htmlState, 
+        parentId
+    }
     
-    //Update bionotes array:
-    userExistingBioNotesCollection.bionotes.push({ bionote_ID, bioName, htmlState });
+    //Update the notebook array:
+    userNotebook.notebook.rootFiles.push(notesObject);
 
-    //Update User with new bionotes array:
-    await User.updateOne({ _id }, { bionotes: userExistingBioNotesCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
+    //Assign note to children of a folder if applicable:
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.injectChildToParent(notesObject, parentId, userNotebook.notebook);
+    }
+
+    //Update User with new notebook:
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
     });
 
-    //Find updated user again for response:
-    const userNewBioNotesCollection = await User.findOne({ _id }).select('bionotes');
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
 
 
     res.status(200).json({
         status: 'Success',
-        userNewBioNotesCollection
+        userNotebook: updatedNotebook.notebook
     });
 })
 
