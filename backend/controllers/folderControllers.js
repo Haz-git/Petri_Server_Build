@@ -6,10 +6,15 @@ const handleAsync = require("../utils/handleAsync");
 //Model:
 const User = require('../models/userModels');
 
-exports.getFolders = handleAsync(async(req, res) => {
+exports.getNotebook = handleAsync(async(req, res) => {
+
+    const { _id } = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
     res.status(200).json({
         status: 'Success',
-        msg: 'Route established1'
+        userNotebook: userNotebook.notebook
     });
 });
 
@@ -59,8 +64,27 @@ exports.deleteFolder = handleAsync(async(req, res) => {
 });
 
 exports.renameFolder = handleAsync(async(req, res) => {
+
+    const { _id, folderId, newFolderName } = req.body;;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook'); 
+    
+    const targetIdx = userNotebook.notebook.folders.findIndex((folder) => {
+        if (folder.folderId === folderId) return true;
+    });
+
+    userNotebook.notebook.folders[targetIdx].folderName = newFolderName;
+
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+    
+
     res.status(200).json({
         status: 'Success',
-        msg: 'Route established4'
+        userNotebook: updatedNotebook.notebook
     });
+
 });
