@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema({
     laczAssayProtocols: [],
     notebook: {
         rootFiles: [],
-        folders: [],
+        rootFolders: [],
     },
     profileImg: {
         type: mongoose.Schema.Types.Mixed,
