@@ -109,6 +109,26 @@ userSchema.methods.removeChildFromParent = function (childId, parentId, userNote
 
 }
 
+//Finds the correct parent and child, modifies the child.
+userSchema.methods.editChildOfParent = function (childId, parentId, newEntryName, newEntryVal, userNotebook) {
+    const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
+        if (folder.folderId === parentId) return true;
+    });
+
+    if (targetFolderIdx > -1) {
+        const targetChildIdx = userNotebook.rootFolders[targetFolderIdx].children.findIndex((child) => {
+            if (child.noteId === childId || child.folderId === childId) {
+                return true;
+            }
+        });
+
+        userNotebook = userNotebook.rootFolders[targetFolderIdx].children[targetChildIdx][newEntryName] = newEntryVal;
+    }
+
+    return userNotebook;
+
+}
+
 //Creating Model:
 const User = mongoose.model('User', userSchema);
 
