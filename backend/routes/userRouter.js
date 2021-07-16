@@ -83,7 +83,7 @@ router
 
 router
     .route('/bionote/delete')
-    .patch(authenticateJWT, bionoteController.deleteBioNote);
+    .post(authenticateJWT, bionoteController.deleteBioNote);
 
 //Personal Calendar Router:
 
