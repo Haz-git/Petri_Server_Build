@@ -75,7 +75,7 @@ exports.deleteFolder = handleAsync(async(req, res) => {
 
 exports.renameFolder = handleAsync(async(req, res) => {
 
-    const { _id, folderId, newFolderName } = req.body;;
+    const { _id, folderId, parentId, newFolderName } = req.body;;
 
     const userNotebook = await User.findOne({ _id }).select('notebook'); 
     
@@ -84,6 +84,10 @@ exports.renameFolder = handleAsync(async(req, res) => {
     });
 
     userNotebook.notebook.rootFolders[targetIdx].folderName = newFolderName;
+
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.editChildOfParent(folderId, parentId, 'folderName', newFolderName ,userNotebook.notebook);
+    }
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
