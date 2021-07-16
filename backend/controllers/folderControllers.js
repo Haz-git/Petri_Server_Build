@@ -20,11 +20,11 @@ exports.getNotebook = handleAsync(async(req, res) => {
 
 exports.addFolder = handleAsync(async(req, res) => {
 
-    const { _id, folderName } = req.body;
+    const { _id, folderName, parentLevel } = req.body;
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    userNotebook.notebook.folders.push({ folderName: folderName, folderId: uuidv4(), notes: []});
+    userNotebook.notebook.rootFolders.push({ folderName: folderName, folderId: uuidv4(), children: [], parent: parentLevel});
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
@@ -44,11 +44,11 @@ exports.deleteFolder = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    const delIdx = userNotebook.notebook.folders.findIndex((folder) => {
+    const delIdx = userNotebook.notebook.rootFolders.findIndex((folder) => {
         if (folder.folderId === folderId) return true;
     });
 
-    userNotebook.notebook.folders.splice(delIdx, 1);
+    userNotebook.notebook.rootFolders.splice(delIdx, 1);
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
@@ -69,11 +69,11 @@ exports.renameFolder = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook'); 
     
-    const targetIdx = userNotebook.notebook.folders.findIndex((folder) => {
+    const targetIdx = userNotebook.notebook.rootFolders.findIndex((folder) => {
         if (folder.folderId === folderId) return true;
     });
 
-    userNotebook.notebook.folders[targetIdx].folderName = newFolderName;
+    userNotebook.notebook.rootFolders[targetIdx].folderName = newFolderName;
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
