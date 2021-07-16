@@ -46,7 +46,7 @@ exports.addFolder = handleAsync(async(req, res) => {
 
 exports.deleteFolder = handleAsync(async(req, res) => {
 
-    const { _id, folderId } = req.body;
+    const { _id, folderId, parentId } = req.body;
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
@@ -55,6 +55,10 @@ exports.deleteFolder = handleAsync(async(req, res) => {
     });
 
     userNotebook.notebook.rootFolders.splice(delIdx, 1);
+
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.removeChildFromParent(folderId, parentId, userNotebook.notebook);
+    }
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
