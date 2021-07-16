@@ -58,30 +58,61 @@ exports.getBioNotes = handleAsync(async(req, res) => {
 
 exports.updateBioNote = handleAsync(async(req, res) => {
 
-    const { _id, bionote_ID, updatedHTMLState } = req.body;
+    const { _id, noteId, parentId, requestType, updatedHTMLState, updatedNoteName } = req.body;
 
-    //Find target User and select bionotes:
+    //RequestType could be UPDATE_NAME || UPDATE_HTML || UPDATE_ALL
 
-    const userBioNoteCollection = await User.findOne({ _id }).select('bionotes');
+    const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    //Iterate through bionotes, find the one with the correct bioName, replace old updatedHTMLState with new from req.body.
+    switch (requestType) {
+        case 'UPDATE_NAME':
+            userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)['noteName'] = updatedNoteName;
+            break;
+        case 'UPDATE_HTML':
+            userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)['htmlState'] = updatedHTMLState;
+            break;
+        case 'UPDATE_ALL':
+            targetObject = userNotebook.notebook.rootFiles.find(x => x.noteId === noteId);
 
-    userBioNoteCollection.bionotes.find(x => x.bionote_ID === bionote_ID)['htmlState'] = updatedHTMLState;
+            targetObject['htmlState'] = updatedHTMLState;
+            targetObject['noteName'] = updatedNoteName;
+            break;
+        default:
+            throw new Error('No requestType or unidentified requestType provided. Please use UPDATE_NAME || UPDATE_HTML || UPDATE_ALL');
+    }
 
-    //Update document:
+    if (parentId !== 'root') {
 
-    await User.updateOne({ _id }, { bionotes: userBioNoteCollection.bionotes }, { bypassDocumentValidation: true}, (err) => {
+        switch (requestType) {
+            case 'UPDATE_NAME':
+                userNotebook.notebook = userNotebook.editChildOfParent(noteId, parentId, 'noteName',updatedNoteName,userNotebook.notebook);
+                break;
+            case 'UPDATE_HTML':
+                userNotebook.notebook = userNotebook.editChildOfParent(noteId, parentId, 'htmlState',updatedHTMLState,userNotebook.notebook);
+                break;
+            case 'UPDATE_ALL':
+                //Need something more efficient.
+                userNotebook.notebook = userNotebook.editChildOfParent(noteId, parentId, 'noteName',updatedNoteName,userNotebook.notebook);
+                userNotebook.notebook = userNotebook.editChildOfParent(noteId, parentId, 'htmlState',updatedHTMLState,userNotebook.notebook);
+                break;
+            default:
+                throw new Error('No requestType or unidentified requestType provided. Please use UPDATE_NAME || UPDATE_HTML || UPDATE_ALL');
+        }
+    }
+
+    //Update User with new notebook:
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
     });
 
-    //answer response with new updated bionotes collection for state update in client-side.
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
 
-    const updatedUserBioNoteCollection = await User.findOne({ _id }).select('bionotes');
 
     res.status(200).json({
         status: 'Success',
-        updatedUserBioNoteCollection,
-    })
+        userNotebook: updatedNotebook.notebook
+    });
 })
 
 exports.deleteBioNote = handleAsync(async(req, res) => {
