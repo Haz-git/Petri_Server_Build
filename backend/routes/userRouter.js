@@ -9,7 +9,7 @@ const authenticateJWT = authJWT.authenticateJWT;
 const authController = require('../controllers/authControllers');
 const chatController = require('../controllers/chatController');
 const taskController = require('../controllers/taskController');
-const bionoteController = require('../controllers/bionoteController');
+const noteController = require('../controllers/noteController');
 const folderController = require('../controllers/folderControllers');
 const calendarController = require('../controllers/calendarController');
 const laczController = require('../controllers/laczController');
@@ -70,20 +70,20 @@ router
 //Personal User BioNote Router:
 
 router
-    .route('/bionote/create')
-    .post(authenticateJWT, bionoteController.addBioNote);
+    .route('/notebook/note/create')
+    .post(authenticateJWT, noteController.addNote);
 
 router
-    .route('/bionote/load')
-    .post(authenticateJWT, bionoteController.getBioNotes);
+    .route('/notebook/note/load')
+    .post(authenticateJWT, noteController.getNotes);
 
 router
-    .route('/bionote/update')
-    .patch(authenticateJWT, bionoteController.updateBioNote);
+    .route('/notebook/note/update')
+    .patch(authenticateJWT, noteController.updateNote);
 
 router
-    .route('/bionote/delete')
-    .post(authenticateJWT, bionoteController.deleteBioNote);
+    .route('/notebook/note/delete')
+    .post(authenticateJWT, noteController.deleteNote);
 
 //Personal Calendar Router:
 

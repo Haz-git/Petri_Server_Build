@@ -24,7 +24,7 @@ exports.addFolder = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    const folderObject = { folderName: folderName, folderId: uuidv4(), children: [], parentId}
+    const folderObject = { folderName: folderName, folderId: uuidv4(), children: [], parentId, dateCreated: new Date(), dateModified: new Date(), ownerName: 'Me'}
 
     userNotebook.notebook.rootFolders.push(folderObject);
 
@@ -84,6 +84,7 @@ exports.renameFolder = handleAsync(async(req, res) => {
     });
 
     userNotebook.notebook.rootFolders[targetIdx].folderName = newFolderName;
+    userNotebook.notebook.rootFolders[targetIdx].dateModified = new Date();
 
     if (parentId !== 'root') {
         userNotebook.notebook = userNotebook.editChildOfParent(folderId, parentId, 'folderName', newFolderName ,userNotebook.notebook);

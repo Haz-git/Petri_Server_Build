@@ -7,19 +7,22 @@ const handleAsync = require("../utils/handleAsync");
 const User = require('../models/userModels');
 
 
-exports.addBioNote = handleAsync(async(req, res) => {
+exports.addNote = handleAsync(async(req, res) => {
 
     //Extract data:
-    const { htmlState, _id, bioName, parentId } = req.body;
+    const { htmlState, _id, noteName, parentId } = req.body;
 
     //Find Appropriate User and select notebook:
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
     const notesObject = {
         noteId: uuidv4(),
-        noteName: bioName, 
+        noteName: noteName, 
         htmlState, 
-        parentId
+        parentId,
+        ownerName: 'Me',
+        dateCreated: new Date(),
+        dateModified: new Date(),
     }
     
     //Update the notebook array:
@@ -45,7 +48,7 @@ exports.addBioNote = handleAsync(async(req, res) => {
     });
 })
 
-exports.getBioNotes = handleAsync(async(req, res) => {
+exports.getNotes = handleAsync(async(req, res) => {
     const { _id } = req.body;
 
     const userExistingBioNotesCollection = await User.findOne({ _id }).select('bionotes');
@@ -56,7 +59,7 @@ exports.getBioNotes = handleAsync(async(req, res) => {
     })
 })
 
-exports.updateBioNote = handleAsync(async(req, res) => {
+exports.updateNote = handleAsync(async(req, res) => {
 
     const { _id, noteId, parentId, requestType, updatedHTMLState, updatedNoteName } = req.body;
 
@@ -66,16 +69,23 @@ exports.updateBioNote = handleAsync(async(req, res) => {
 
     switch (requestType) {
         case 'UPDATE_NAME':
-            userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)['noteName'] = updatedNoteName;
+            targetObject = userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)
+            
+            targetObject['noteName'] = updatedNoteName;
+            targetObject['dateModified'] = new Date();
             break;
         case 'UPDATE_HTML':
-            userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)['htmlState'] = updatedHTMLState;
+            targetObject = userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)
+            
+            targetObject['htmlState'] = updatedHTMLState;
+            targetObject['dateModified'] = new Date();
             break;
         case 'UPDATE_ALL':
             targetObject = userNotebook.notebook.rootFiles.find(x => x.noteId === noteId);
 
             targetObject['htmlState'] = updatedHTMLState;
             targetObject['noteName'] = updatedNoteName;
+            targetObject['dateModified'] = new Date();
             break;
         default:
             throw new Error('No requestType or unidentified requestType provided. Please use UPDATE_NAME || UPDATE_HTML || UPDATE_ALL');
@@ -115,7 +125,7 @@ exports.updateBioNote = handleAsync(async(req, res) => {
     });
 })
 
-exports.deleteBioNote = handleAsync(async(req, res) => {
+exports.deleteNote = handleAsync(async(req, res) => {
     const { _id, noteId, parentId } = req.body;
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
@@ -123,7 +133,7 @@ exports.deleteBioNote = handleAsync(async(req, res) => {
     const delIdx = userNotebook.notebook.rootFiles.findIndex((note) => {
         if (note.noteId === noteId) return true;
     });
-
+    
     userNotebook.notebook.rootFiles.splice(delIdx, 1);
 
     if (parentId !== 'root') {

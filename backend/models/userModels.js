@@ -122,7 +122,13 @@ userSchema.methods.editChildOfParent = function (childId, parentId, newEntryName
             }
         });
 
-        userNotebook = userNotebook.rootFolders[targetFolderIdx].children[targetChildIdx][newEntryName] = newEntryVal;
+
+        targetEntity = userNotebook.rootFolders[targetFolderIdx].children[targetChildIdx];
+
+        targetEntity[newEntryName] = newEntryVal;
+        targetEntity['dateModified'] = new Date();
+
+        userNotebook = targetEntity;
     }
 
     return userNotebook;
