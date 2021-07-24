@@ -67,6 +67,7 @@ exports.updateNote = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
+
     switch (requestType) {
         case 'UPDATE_NAME':
             targetObject = userNotebook.notebook.rootFiles.find(x => x.noteId === noteId)
@@ -133,7 +134,7 @@ exports.deleteNote = handleAsync(async(req, res) => {
     const delIdx = userNotebook.notebook.rootFiles.findIndex((note) => {
         if (note.noteId === noteId) return true;
     });
-    
+
     userNotebook.notebook.rootFiles.splice(delIdx, 1);
 
     if (parentId !== 'root') {
