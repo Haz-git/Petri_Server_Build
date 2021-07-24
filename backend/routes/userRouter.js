@@ -79,7 +79,7 @@ router
 
 router
     .route('/notebook/note/update')
-    .patch(authenticateJWT, noteController.updateNote);
+    .post(authenticateJWT, noteController.updateNote);
 
 router
     .route('/notebook/note/delete')
