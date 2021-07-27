@@ -132,6 +132,14 @@ userSchema.methods.editChildOfParent = function (childId, parentId, newEntryName
 
 }
 
+userSchema.methods.editEntityProperty = function (currentNotebook, entityType, entityId, property, newPropertyValue) {
+    if (entityType === 'NOTE') {
+        return currentNotebook.rootFiles.find(x => x.noteId === entityId)[property] = newPropertyValue;
+    } else if (entityType === 'FOLDER') {
+        return currentNotebook.rootFolders.find(x => x.folderId === entityId)[property] = newPropertyValue;
+    }
+}
+
 //Creating Model:
 const User = mongoose.model('User', userSchema);
 
