@@ -23,6 +23,7 @@ exports.addNote = handleAsync(async(req, res) => {
         ownerName: 'Me',
         dateCreated: new Date(),
         dateModified: new Date(),
+        isStarred: 'FALSE',
     }
     
     //Update the notebook array:
@@ -152,5 +153,12 @@ exports.deleteNote = handleAsync(async(req, res) => {
         status: 'Success',
         userNotebook: updatedNotebook.notebook
     });
+
+});
+
+exports.sendNoteToStarred = handleAsync(async(req,res) => {
+    const {_id, noteId} = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
 
 })

@@ -24,7 +24,16 @@ exports.addFolder = handleAsync(async(req, res) => {
 
     const userNotebook = await User.findOne({ _id }).select('notebook');
 
-    const folderObject = { folderName: folderName, folderId: uuidv4(), children: [], parentId, dateCreated: new Date(), dateModified: new Date(), ownerName: 'Me'}
+    const folderObject = { 
+        folderName: folderName,
+        folderId: uuidv4(), 
+        children: [], 
+        parentId, 
+        dateCreated: new Date(), 
+        dateModified: new Date(), 
+        ownerName: 'Me',
+        isStarred: 'FALSE',
+    }
 
     userNotebook.notebook.rootFolders.push(folderObject);
 
