@@ -174,8 +174,6 @@ exports.updateStarredNote = handleAsync(async(req,res) => {
             throw new Error('No requestType or unidentified requestType provided. Please use ADD_NOTE_TO_STARRED || REMOVE_NOTE_FROM_STARRED');
     }
 
-    console.log(userNotebook.notebook);
-
     if (parentId !== 'root') {
 
         switch (requestType) {
