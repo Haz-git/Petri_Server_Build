@@ -85,6 +85,10 @@ router
     .route('/notebook/note/delete')
     .post(authenticateJWT, noteController.deleteNote);
 
+router
+    .route('/notebook/note/starred/update')
+    .post(authenticateJWT, noteController.updateStarredNote);
+
 //Personal Calendar Router:
 
 router
