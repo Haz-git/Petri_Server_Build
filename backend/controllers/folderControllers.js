@@ -112,3 +112,53 @@ exports.renameFolder = handleAsync(async(req, res) => {
     });
 
 });
+
+exports.updateStarredFolder = handleAsync(async(req, res) => {
+
+    const {_id, folderId, parentId, requestType} = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    switch (requestType) {
+        case 'ADD_FOLDER_TO_STARRED':
+            userNotebook.notebook = userNotebook.editEntityProperty(userNotebook.notebook, 'FOLDER', folderId, 'isStarred', 'TRUE');
+            userNotebook.notebook = userNotebook.editEntityProperty(userNotebook.notebook, 'FOLDER', folderId, 'dateModified', new Date());
+            break;
+        case 'REMOVE_FOLDER_FROM_STARRED':
+            userNotebook.notebook = userNotebook.editEntityProperty(userNotebook.notebook, 'FOLDER', folderId, 'isStarred', 'FALSE');
+            userNotebook.notebook = userNotebook.editEntityProperty(userNotebook.notebook, 'FOLDER', folderId, 'dateModified', new Date());
+            break;
+        default:
+            throw new Error('No requestType or unidentified requestType provided. Please use ADD_FOLDER_TO_STARRED || REMOVE_FOLDER_FROM_STARRED');
+    }
+
+    if (parentId !== 'root') {
+
+        switch (requestType) {
+            case 'ADD_FOLDER_TO_STARRED':
+                userNotebook.notebook = userNotebook.editChildOfParent(folderId, parentId, 'isStarred','TRUE',userNotebook.notebook);
+                break;
+            case 'REMOVE_FOLDER_FROM_STARRED':
+                userNotebook.notebook = userNotebook.editChildOfParent(folderId, parentId, 'isStarred','FALSE',userNotebook.notebook);
+                break;
+            default:
+                throw new Error('No requestType or unidentified requestType provided. Please use ADD_FOLDER_TO_STARRED || REMOVE_FOLDER_FROM_STARRED');
+        }
+    }
+
+    //Update User with new notebook:
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+
+
+    res.status(200).json({
+        status: 'Success',
+        userNotebook: updatedNotebook.notebook
+    });
+
+
+})
