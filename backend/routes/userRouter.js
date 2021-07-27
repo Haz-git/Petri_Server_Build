@@ -64,6 +64,10 @@ router
     .post(authenticateJWT, folderController.renameFolder);
 
 router
+    .route('/notebook/folder/starred/update')
+    .post(authenticateJWT, folderController.updateStarredFolder);
+
+router
     .route('/notebook/get')
     .post(authenticateJWT, folderController.getNotebook);
 
