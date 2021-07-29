@@ -63,11 +63,16 @@ exports.deleteFolder = handleAsync(async(req, res) => {
         if (folder.folderId === folderId) return true;
     });
 
+    if (userNotebook.notebook.rootFolders[delIdx].children.length !== 0) {
+        userNotebook.notebook = userNotebook.removeFolderContents(folderId, userNotebook.notebook);
+    }
+
     userNotebook.notebook.rootFolders.splice(delIdx, 1);
 
     if (parentId !== 'root') {
         userNotebook.notebook = userNotebook.removeChildFromParent(folderId, parentId, userNotebook.notebook);
     }
+
 
     await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
         if (err) console.log(err);
