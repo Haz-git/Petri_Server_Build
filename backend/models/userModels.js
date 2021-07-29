@@ -87,6 +87,37 @@ userSchema.methods.injectChildToParent = function (entity, parentId, userNoteboo
 
 }
 
+userSchema.methods.removeFolderContents = function (folderId, userNotebook) {
+    const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
+        if (folder.folderId === folderId) return true;
+    });
+
+    const targetFolder = userNotebook.rootFolders[targetFolderIdx];
+
+    if (targetFolder.children.length !== 0) {
+        targetFolder.children.forEach((child) => {
+            let childId = child.noteId === undefined ? child.folderId : child.noteId;
+            let childType = child.noteId === undefined ? 'FOLDER' : 'NOTE';
+
+            if (childType === 'FOLDER') {
+
+                let childTargetIdx = userNotebook.rootFolders.findIndex((child) => {
+                    if (child.folderId === childId) return true;
+                })
+                userNotebook.rootFolders.splice(childTargetIdx, 1);
+            } else {
+                let childTargetIdx = userNotebook.rootFiles.findIndex((child) => {
+                    if (child.noteId === childId) return true;
+                })
+                userNotebook.rootFiles.splice(childTargetIdx, 1);
+            }
+
+        });
+    }
+
+    return userNotebook;
+}
+
 //Find the correct parent and removes the child note
 userSchema.methods.removeChildFromParent = function (childId, parentId, userNotebook) {
     const targetFolderIdx = userNotebook.rootFolders.findIndex((folder) => {
