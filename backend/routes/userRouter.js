@@ -68,6 +68,10 @@ router
     .post(authenticateJWT, folderController.updateStarredFolder);
 
 router
+    .route('/notebook/folder/move')
+    .post(authenticateJWT, folderController.moveFolder);
+
+router
     .route('/notebook/get')
     .post(authenticateJWT, folderController.getNotebook);
 
@@ -88,6 +92,10 @@ router
 router
     .route('/notebook/note/delete')
     .post(authenticateJWT, noteController.deleteNote);
+
+router
+    .route('/notebook/note/move')
+    .post(authenticateJWT, noteController.moveNote);
 
 router
     .route('/notebook/note/starred/update')
