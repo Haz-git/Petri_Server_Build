@@ -202,4 +202,9 @@ exports.updateStarredNote = handleAsync(async(req,res) => {
         userNotebook: updatedNotebook.notebook
     });
 
-})
+});
+
+
+exports.moveNote = handleAsync(async(req, res) => {
+    
+});

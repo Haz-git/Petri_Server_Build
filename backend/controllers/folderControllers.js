@@ -164,6 +164,8 @@ exports.updateStarredFolder = handleAsync(async(req, res) => {
         status: 'Success',
         userNotebook: updatedNotebook.notebook
     });
+})
 
-
+exports.moveFolder = handleAsync(async(req, res) => {
+    
 })
