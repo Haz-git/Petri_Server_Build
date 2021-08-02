@@ -167,5 +167,50 @@ exports.updateStarredFolder = handleAsync(async(req, res) => {
 })
 
 exports.moveFolder = handleAsync(async(req, res) => {
-    
+    const {_id, folderId, parentId, targetParentId } = req.body;
+
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    /* 
+        1. Identify the folder of concern in the rootFolders-- update the parentId to the desired targetParentId
+        2. Remove the folder from the children of the old folder (parentId);
+    */
+
+    const currentFolderIdx = userNotebook.findEntity(folderId, 'FOLDER', userNotebook.notebook, 'INDEX');
+
+    console.log(currentFolderIdx);
+
+    //Inject the folder into the target Folder's children array.
+
+    const currentFolderObj = userNotebook.findEntity(folderId, 'FOLDER', userNotebook.notebook, 'OBJECT')
+
+    console.log(currentFolderObj);
+
+    userNotebook.notebook = userNotebook.injectChildToParent(currentFolderObj, targetParentId, userNotebook.notebook);
+
+    //Updating the parentId to the desired parentId, or where we'll move the folder.
+    userNotebook.notebook.rootFolders[currentFolderIdx]['parentId'] = targetParentId;
+
+    /*
+        Remove the folder from the children of the old folder (parentId). However, if the old location is 'root', then we don't need to remove it... 
+    */
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.removeChildFromParent(folderId, parentId, userNotebook.notebook);
+    }
+
+    //Update User with new notebook:
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+
+
+    res.status(200).json({
+        status: 'Success',
+        userNotebook: updatedNotebook.notebook
+    });
+
+
 })
