@@ -178,13 +178,10 @@ exports.moveFolder = handleAsync(async(req, res) => {
 
     const currentFolderIdx = userNotebook.findEntity(folderId, 'FOLDER', userNotebook.notebook, 'INDEX');
 
-    console.log(currentFolderIdx);
 
     //Inject the folder into the target Folder's children array.
 
     const currentFolderObj = userNotebook.findEntity(folderId, 'FOLDER', userNotebook.notebook, 'OBJECT')
-
-    console.log(currentFolderObj);
 
     userNotebook.notebook = userNotebook.injectChildToParent(currentFolderObj, targetParentId, userNotebook.notebook);
 
