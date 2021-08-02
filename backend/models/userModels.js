@@ -172,6 +172,31 @@ userSchema.methods.editEntityProperty = function (currentNotebook, entityType, e
     return currentNotebook;
 }
 
+userSchema.methods.findEntity = (entityId, entityType, notebook, returnType = 'INDEX') => {
+    switch (entityType) {
+        case ('FOLDER'):
+            const locationFolder = notebook.rootFolders.findIndex((folder) => {
+                if (folder.folderId === entityId) return true;
+            });
+            if (returnType === 'INDEX') {
+                return locationFolder;
+            }
+            return notebook.rootFolders[locationFolder];
+        case ('NOTE'):
+            const locationNote = notebook.rootFiles.findIndex((note) => {
+                if (note.noteId === entityId) return true;
+            });
+
+            if (returnType === 'INDEX') {
+                return locationNote;
+            }
+
+            return notebook.rootFiles[locationNote];
+        default:
+            throw new error('No entity type was specified in findEntity()');
+    }
+}
+
 //Creating Model:
 const User = mongoose.model('User', userSchema);
 
