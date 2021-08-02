@@ -206,5 +206,50 @@ exports.updateStarredNote = handleAsync(async(req,res) => {
 
 
 exports.moveNote = handleAsync(async(req, res) => {
+
+    const {_id, noteId, parentId, targetParentId } = req.body;
     
+    const userNotebook = await User.findOne({ _id }).select('notebook');
+
+    /* 
+        IF IN ROOT DIRECTORY
+        1. Update the parentId of the file in rootFiles.
+        2. Append the note to 'children' of the target folder.
+
+        IF NESTED NOTE
+        1. Update the parentId of the file in rootFiles.
+        2. Inject note into folder's children array.
+        3. Remove the note from old parent.
+    */
+
+       
+    const currentNoteIdx = userNotebook.findEntity(noteId, 'NOTE', userNotebook.notebook, 'INDEX');
+
+
+    //Inject the Note into the target Note's children array.
+
+    const currentNoteObj = userNotebook.findEntity(noteId, 'NOTE', userNotebook.notebook, 'OBJECT');
+
+    userNotebook.notebook = userNotebook.injectChildToParent(currentNoteObj, targetParentId, userNotebook.notebook);
+
+    //Updating the parentId to the desired parentId, or where we'll move the Note.
+    userNotebook.notebook.rootFiles[currentNoteIdx]['parentId'] = targetParentId;
+
+    if (parentId !== 'root') {
+        userNotebook.notebook = userNotebook.removeChildFromParent(noteId, parentId, userNotebook.notebook);
+    }
+
+    //Update User with new notebook:
+    await User.updateOne({ _id }, { notebook: userNotebook.notebook }, { bypassDocumentValidation: true}, (err) => {
+        if (err) console.log(err);
+    });
+
+    //Return updated notebook
+    const updatedNotebook = await User.findOne({ _id }).select('notebook');
+
+
+    res.status(200).json({
+        status: 'Success',
+        userNotebook: updatedNotebook.notebook
+    });
 });
